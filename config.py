@@ -3,7 +3,7 @@ import os
 # Command to validate github cli token: gh repo list livspaceeng -L 10 --json isPrivate
 
 class Configuration:
-    GITHUB_TOKEN = "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"
+    GITHUB_TOKEN = "<GITHUB TOKEN>"
     GITHUB_ORG = "livspaceeng"
     SINCE = "2023-07-01" # Date since for commit report
     REPO_FILTER = [ "paramarsh", "bumblebee" ] # Report only these, set to None for all
