@@ -1,3 +1,4 @@
 requests==2.31.0
 xlsxwriter==3.1.2
 tqdm==4.65.1
+jira==3.5.2

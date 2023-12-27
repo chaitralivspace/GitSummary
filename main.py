@@ -1,3 +1,4 @@
+import operator
 import os
 import shutil, shlex
 import requests
@@ -50,6 +51,7 @@ def main():
     workbook = xlsxwriter.Workbook(os.path.join(os.getcwd(), "summary.xlsx"))
     repobar = tqdm(range(
         len(repos)), bar_format="{desc:50s} {percentage:3.0f}%|{bar:100}|", position=0)
+    total_count = {}
     for reprogress in repobar:
         repo = repos[reprogress]
         if Configuration.REPO_FILTER and not repo['name'].upper() in map(str.upper, Configuration.REPO_FILTER):
@@ -89,10 +91,24 @@ def main():
         worksheet.write_row(index - 1, 0, ["Totals", "", "", "", "", ""], bold)
         for author in aggregate:
             row = [author] + list(map(int, aggregate[author]))
+            if author not in total_count:
+                total_count[author] = list(map(int, aggregate[author]))
+            else:
+                total_count[author] = list(map(operator.add, total_count[author], list(map(int, aggregate[author]))))
             worksheet.write_row(index, 0, row)
             index += 1
         commitbar.close()
     repobar.close()
+    worksheet = workbook.add_worksheet("Aggregate")
+    worksheet.set_column(0, 5, 50)
+    bold = workbook.add_format({"bold": True, "bg_color": "#FFC7CE"})
+    worksheet.write_row(0, 0, ["Author", "Files changed",
+                               "Lines Added", "Lines Removed", "Output", "Commit"], bold)
+    index = 1
+    for author, lines in total_count.items():
+        row = [author] + list(map(int, lines))
+        worksheet.write_row(index, 0, row)
+        index += 1
     commitbar = tqdm(total=10.0, initial=10.0, desc="Parsing commits", bar_format="{desc:50s} {percentage:3.0f}%|{bar:100}|", colour="green")
     rmdir(Configuration.TEMP_DIR)
     workbook.close()
