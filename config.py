@@ -1,5 +1,5 @@
 import os
-# set GH_TOKEN=<token>
+# export GH_TOKEN=<token>
 # Command to validate github cli token: gh repo list livspaceeng -L 10 --json isPrivate
 
 class Configuration:
