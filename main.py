@@ -65,9 +65,9 @@ def main():
         rmdir(Configuration.TEMP_DIR)
         execute(
             f"git clone --no-checkout https://{Configuration.GITHUB_TOKEN}@github.com/{Configuration.GITHUB_ORG}/{repo['name']}.git {Configuration.TEMP_DIR}")
-        aggregate = defaultdict(lambda: (0, 0, 0))
+        aggregate = defaultdict(lambda: (0, 0, 0, 0))
         commits = execute(
-            f"git log --oneline --all --date=local --since='{Configuration.SINCE}' --branches='*' --no-merges")
+            f"git log --oneline --all --date=local --since='{Configuration.SINCE}' --until='{Configuration.UNTILL}' --branches='*' --no-merges")
         commitbar = tqdm(range(len(commits)), desc="Parsing commits", leave=False,
                          bar_format="{desc:50s} {percentage:3.0f}%|{bar:100}|", position=1, colour="green")
         for index in commitbar:
@@ -84,11 +84,11 @@ def main():
                 summary[2] = re.findall(
                     "(\d+) deletions*|$", stats[-1])[0] or '0'
                 aggregate[author] = (aggregate[author][0] + int(summary[0]), aggregate[author]
-                                     [1] + int(summary[1]), aggregate[author][2] + int(summary[2]))
+                                     [1] + int(summary[1]), aggregate[author][2] + int(summary[2]), aggregate[author][3] + 1)
                 worksheet.write_row(
                     index + 1, 0, [author, summary[0], summary[1], summary[2], stats[-1], shortlog])
         index = len(commits) + 5
-        worksheet.write_row(index - 1, 0, ["Totals", "", "", "", "", ""], bold)
+        worksheet.write_row(index - 1, 0, ["Totals", "", "", "", "count", ""], bold)
         for author in aggregate:
             row = [author] + list(map(int, aggregate[author]))
             if author not in total_count:
@@ -103,7 +103,7 @@ def main():
     worksheet.set_column(0, 5, 50)
     bold = workbook.add_format({"bold": True, "bg_color": "#FFC7CE"})
     worksheet.write_row(0, 0, ["Author", "Files changed",
-                               "Lines Added", "Lines Removed", "Output", "Commit"], bold)
+                               "Lines Added", "Lines Removed", "Count", ""], bold)
     index = 1
     for author, lines in total_count.items():
         row = [author] + list(map(int, lines))
