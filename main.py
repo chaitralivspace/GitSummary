@@ -67,7 +67,7 @@ def main():
             f"git clone --no-checkout https://{Configuration.GITHUB_TOKEN}@github.com/{Configuration.GITHUB_ORG}/{repo['name']}.git {Configuration.TEMP_DIR}")
         aggregate = defaultdict(lambda: (0, 0, 0, 0))
         commits = execute(
-            f"git log --oneline --all --date=local --since='{Configuration.SINCE}' --until='{Configuration.UNTILL}' --branches='*' --no-merges")
+            f"git log --oneline --all --date=local --since='{Configuration.SINCE}' --until='{Configuration.UNTILL}' --branches='master' --no-merges")
         commitbar = tqdm(range(len(commits)), desc="Parsing commits", leave=False,
                          bar_format="{desc:50s} {percentage:3.0f}%|{bar:100}|", position=1, colour="green")
         for index in commitbar:

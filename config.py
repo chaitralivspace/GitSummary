@@ -5,11 +5,11 @@ import os
 class Configuration:
     GITHUB_TOKEN = "<GITHUB TOKEN>"
     GITHUB_ORG = "livspaceeng"
-    SINCE = "2023-11-01" # Date since for commit report
-    UNTILL = "2023-12-01"
+    SINCE = "2024-01-01" # Date since for commit report
+    UNTILL = "2024-02-01"
     REPO_FILTER = [ "paramarsh", "spider", "auxilium", "brok", "sindri", "liv-home", "lego-web", "livhome-backend", "paramarsh", "pylab-client", "render-farm", "Simulator",
                     "spider", "welcomeboard3d", "py-consumers", "parametric-3dtool", "blueprint", "Parametric-Simulator", "ls-backoffice","odin","peggy",
-                    "quotes-graphql", "platformweb"] # Report only these, set to None for all
+                    "quotes-graphql", "platformweb", "exp-eval-sdk-js", "keystone"] # Report only these, set to None for all
 
 
 

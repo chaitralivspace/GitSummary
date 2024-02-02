@@ -28,7 +28,7 @@ def do_main():
 
         projectbar.set_description_str(f"Fetching project {proj.key}")
         aggregate = defaultdict(lambda: 0)
-        issues = jira.search_issues(f""" project = "{proj.key}" and resolutiondate > {Config.SINCE} and resolutiondate < {Config.UNTIL} {Config.JQL} order by priority desc""",
+        issues = jira.search_issues(f""" project = "{proj.key}" and resolutiondate >= {Config.SINCE} and resolutiondate < {Config.UNTIL} {Config.JQL} order by priority desc""",
                                     startAt=0, maxResults=1, json_result=True)
         issuesbar = tqdm(range(0, issues["total"], pageSize),
                          bar_format="{desc:50s} {percentage:3.0f}%|{bar:100}|", position=1, colour="magenta", leave=False, desc="Fetching issues")
@@ -40,7 +40,8 @@ def do_main():
             issuesList.extend(issues)
 
         for (index, i) in enumerate(issuesList):
-            storyPoints = float(i.raw["fields"][Config.STORY_FIELD] or "0.0")
+            storyPoints = max(float(i.raw["fields"][Config.STORY_POINT_ESTIMATE_FIELD] or "0.0"),
+                              float(i.raw["fields"][Config.STORY_POINT_FIELD] or "0.0"))
             sprint = i.raw["fields"][Config.SPRINT_FIELD].pop() if i.raw["fields"][Config.SPRINT_FIELD] else {"name": "Unknown"}
             closed = datetime.strptime(
                 i.fields.resolutiondate, "%Y-%m-%dT%H:%M:%S.%f%z").strftime("%Y-%m-%d")
